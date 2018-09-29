@@ -78,6 +78,22 @@ server.post('/users', (req, resp) => {
     //    resp.end("not implented yet!");
 })
 
+///======== User Login 
+server.post('/login', (req, resp) => {
+    let { username } = req.body;
+
+    data = fs.readFileSync(filename, 'utf-8');//if file is alredy exists
+    data = JSON.parse(data);
+    const index = data.findIndex(c => c.username === username);
+    let user = data[index];
+    if (user) {
+        let { id, username } = user;
+        let token = jwt.sign({ id, username }, SECRET_KEY);
+        resp.json({ id, username, token });
+        return;
+    }
+    resp.status(401).json('User Is not registred at.');
+});
 
 var port = process.env.PORT || 900;
 server.listen(port, () => {
